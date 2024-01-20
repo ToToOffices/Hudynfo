@@ -1,0 +1,46 @@
+#include < amxmodx >
+#include < fun >
+#include < cstrike >
+#include < fakemeta >
+
+#define PLUGIN "Show hud"
+#define VERSION "0.0.1"
+#define AUTHOR "YONTU"
+
+#pragma semicolon 1
+
+public client_putinserver( id )
+{
+   set_task( 1.0, "ShowUserDetails", id, _, _, "b" );
+}
+
+public client_disconnect( id )
+{
+	remove_task( id );
+}
+
+public ShowUserDetails( id )
+{
+   if( is_user_connected( id ) && !is_user_bot( id ) && is_user_alive( id ) )
+   {
+      new Health, Armor, Money;
+      new Speed, Float:Gravity;
+
+      Health = get_user_health( id );
+      Armor = get_user_armor( id );
+      Money = cs_get_user_money( id );
+      Speed = get_speed( id );
+      Gravity = get_user_gravity( id );
+
+      set_hudmessage( 0, 255, 0, 0.01, 0.8, _, _, _ );
+      show_hudmessage( id, "HP: [ %d ] | AP: [ %d ] | Gold[ %d ] | Speed: [ %d ] | Gravity [ %0.1f ]", Health, Armor, Money, Speed, Gravity );
+   }
+}
+
+stock get_speed(id)
+{
+    static Float:velocitate[3];
+    pev(id, pev_velocity, velocitate);
+    
+    return floatround(vector_length(velocitate));
+}
